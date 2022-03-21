@@ -4,12 +4,20 @@ logging.basicConfig(level=logging.DEBUG,
 logger = logging.getLogger(__name__)
 
 import os
+TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
+APP_ID = int(os.environ.get("APP_ID", 12345))
+API_HASH = os.environ.get("API_HASH")
+AUTH_USERS = set(int(x) for x in os.environ.get("AUTH_USERS", "").split())
+DOWNLOAD_LOCATION = "./DOWNLOADS"
+TG_MAX_FILE_SIZE = 2097152000
+CHUNK_SIZE = 128
+DB_URI = os.environ.get("DATABASE_URL", "")
 
 if bool(os.environ.get("WEBHOOK", False)):
-    from sample_config import Config
+   # from sample_config import Config
 #else:
    # from config import Config
-from Config import DOWNLOAD_LOCATION, TG_BOT_TOKEN, APP_ID, API_HASH, AUTH_USERS
+#from Config import DOWNLOAD_LOCATION, TG_BOT_TOKEN, APP_ID, API_HASH, AUTH_USERS
 import pyrogram
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
 
