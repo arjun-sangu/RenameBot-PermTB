@@ -8,3 +8,4 @@ services:
       AUTH_USERS: $AUTH_USERS  # defaults to None
       TG_BOT_TOKEN: $TG_BOT_TOKEN 
       WEBHOOK: $ANYTHING
+      DB_URI:$DB_URI
