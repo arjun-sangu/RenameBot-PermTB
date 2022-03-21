@@ -1,3 +1,4 @@
+import pyrogram
 import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -13,12 +14,11 @@ TG_MAX_FILE_SIZE = 2097152000
 CHUNK_SIZE = 128
 DB_URI = os.environ.get("DATABASE_URL", "")
 
-if bool(os.environ.get("WEBHOOK", False)):
+#if bool(os.environ.get("WEBHOOK", False)):
    # from sample_config import Config
 #else:
    # from config import Config
 #from Config import DOWNLOAD_LOCATION, TG_BOT_TOKEN, APP_ID, API_HASH, AUTH_USERS
-import pyrogram
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
 
 
