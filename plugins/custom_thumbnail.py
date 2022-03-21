@@ -8,9 +8,18 @@ import os
 import pyrogram
 
 if bool(os.environ.get("WEBHOOK", False)):
-    from sample_config import Config
-else:
-    from config import Config
+   # from sample_config import Config
+#else:
+   # from config import Config
+TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
+APP_ID = int(os.environ.get("APP_ID", 12345))
+API_HASH = os.environ.get("API_HASH")
+AUTH_USERS = set(int(x) for x in os.environ.get("AUTH_USERS", "").split())
+DOWNLOAD_LOCATION = "./DOWNLOADS"
+TG_MAX_FILE_SIZE = 2097152000
+CHUNK_SIZE = 128
+DB_URI = os.environ.get("DATABASE_URL", "")
+BANNED_USERS = []
 
 from script import script
 from pyrogram import Client, filters
@@ -22,7 +31,7 @@ from database.database import *
 
 @Client.on_message(filters.photo)
 async def save_photo(bot, update):
-    if update.from_user.id in Config.BANNED_USERS:
+    if update.from_user.id in BANNED_USERS:
         await bot.delete_messages(
             chat_id=update.chat.id,
             message_ids=update.message_id,
@@ -32,7 +41,7 @@ async def save_photo(bot, update):
 
     if update.media_group_id is not None:
         # album is sent
-        download_location = Config.DOWNLOAD_LOCATION + "/" + str(update.from_user.id) + "/" + str(update.media_group_id) + "/"
+        download_location = DOWNLOAD_LOCATION + "/" + str(update.from_user.id) + "/" + str(update.media_group_id) + "/"
         # create download directory, if not exist
         if not os.path.isdir(download_location):
             os.makedirs(download_location)
@@ -43,7 +52,7 @@ async def save_photo(bot, update):
         )
     else:
         # received single photo
-        download_location = Config.DOWNLOAD_LOCATION + "/" + str(update.from_user.id) + ".jpg"
+        download_location = DOWNLOAD_LOCATION + "/" + str(update.from_user.id) + ".jpg"
         await sql.df_thumb(update.from_user.id, update.message_id)
         await bot.download_media(
             message=update,
@@ -58,7 +67,7 @@ async def save_photo(bot, update):
 
 @Client.on_message(filters.command(["delthumb"]))
 async def delete_thumbnail(bot, update):
-    if update.from_user.id in Config.BANNED_USERS:
+    if update.from_user.id in BANNED_USERS:
         await bot.delete_messages(
             chat_id=update.chat.id,
             message_ids=update.message_id,
@@ -66,8 +75,8 @@ async def delete_thumbnail(bot, update):
         )
         return
 
-    thumb_image_path = Config.DOWNLOAD_LOCATION + "/" + str(update.from_user.id) + ".jpg"
-    #download_location = Config.DOWNLOAD_LOCATION + "/" + str(update.from_user.id)
+    thumb_image_path = DOWNLOAD_LOCATION + "/" + str(update.from_user.id) + ".jpg"
+    #download_location = DOWNLOAD_LOCATION + "/" + str(update.from_user.id)
     
     try:
         await sql.del_thumb(update.from_user.id) 
@@ -88,7 +97,7 @@ async def delete_thumbnail(bot, update):
 
 @Client.on_message(filters.command(["showthumb"]))
 async def show_thumb(bot, update):
-    if update.from_user.id in Config.BANNED_USERS:
+    if update.from_user.id in BANNED_USERS:
         await bot.delete_messages(
             chat_id=update.chat.id,
             message_ids=update.message_id,
@@ -96,7 +105,7 @@ async def show_thumb(bot, update):
         )
         return
 
-    thumb_image_path = Config.DOWNLOAD_LOCATION + "/" + str(update.from_user.id) + ".jpg"
+    thumb_image_path = DOWNLOAD_LOCATION + "/" + str(update.from_user.id) + ".jpg"
     if not os.path.exists(thumb_image_path):
         mes = await thumb(update.from_user.id)
         if mes != None:
